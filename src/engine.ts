@@ -31,6 +31,33 @@ const safeForMessage = (value: string): string => value.replace(
   (character) => `\\u{${character.codePointAt(0)!.toString(16).padStart(4, "0")}}`,
 );
 
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function isDenseArray(value: unknown): value is unknown[] {
+  return Array.isArray(value)
+    && Object.keys(value).length === value.length
+    && Object.keys(value).every((key, index) => key === String(index));
+}
+
+function canonicalJson(value: unknown): string {
+  if (value === null || typeof value === "boolean" || typeof value === "string") return JSON.stringify(value);
+  if (finite(value)) return JSON.stringify(Object.is(value, -0) ? 0 : value);
+  if (isDenseArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  if (isPlainRecord(value)) {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(",")}}`;
+  }
+  throw new TypeError("canonical session input requires finite acyclic JSON values");
+}
+
+export function canonicalSessionSource(sessions: readonly ValueSession[]): string {
+  if (!isDenseArray(sessions)) throw new Error("sessions must be a dense array");
+  return `${sessions.map((session) => canonicalJson(session)).join("\n")}\n`;
+}
+
 const ISO_DATE_TIME = /^(\d{4})-(\d{2})-(\d{2})T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,9})?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/u;
 
 function isIsoDateTime(value: unknown): value is string {
@@ -59,58 +86,58 @@ function rejectUnknownFields(
 
 export function validateSession(value: unknown): string[] {
   const errors: string[] = [];
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return ["session must be an object"];
+  if (!isPlainRecord(value)) {
+    return ["session must be a plain object"];
   }
   const session = value as Partial<ValueSession>;
   rejectUnknownFields(session, [
     "schemaVersion", "id", "timestamp", "intent", "archetype", "outcome", "cost", "guardrails",
     "variant", "userHash", "tags",
   ], "", errors);
-  if (session.schemaVersion !== SESSION_SCHEMA) errors.push(`schemaVersion must be ${SESSION_SCHEMA}`);
-  if (typeof session.id !== "string" || session.id.trim() === "" || hasUnsafeControl(session.id)) {
+  if (!Object.hasOwn(session, "schemaVersion") || session.schemaVersion !== SESSION_SCHEMA) errors.push(`schemaVersion must be ${SESSION_SCHEMA}`);
+  if (!Object.hasOwn(session, "id") || typeof session.id !== "string" || session.id.trim() === "" || hasUnsafeControl(session.id)) {
     errors.push("id must be a non-empty string without control characters");
   }
-  if (typeof session.intent !== "string" || session.intent.trim() === "" || hasUnsafeControl(session.intent)) {
+  if (!Object.hasOwn(session, "intent") || typeof session.intent !== "string" || session.intent.trim() === "" || hasUnsafeControl(session.intent)) {
     errors.push("intent must be a non-empty string without control characters");
   }
-  if (!(["general", "utility", "entertainment", "education"] as unknown[]).includes(session.archetype)) {
+  if (!Object.hasOwn(session, "archetype") || !(["general", "utility", "entertainment", "education"] as unknown[]).includes(session.archetype)) {
     errors.push("archetype must be general, utility, entertainment, or education");
   }
-  if (!isIsoDateTime(session.timestamp)) {
+  if (!Object.hasOwn(session, "timestamp") || !isIsoDateTime(session.timestamp)) {
     errors.push("timestamp must be an ISO-8601 date-time");
   }
-  if (typeof session.outcome !== "object" || session.outcome === null) {
+  if (!Object.hasOwn(session, "outcome") || !isPlainRecord(session.outcome)) {
     errors.push("outcome is required");
   } else {
     rejectUnknownFields(session.outcome, ["achieved", "quality", "weight", "value", "knowledgeDelta"], "outcome.", errors);
-    if (typeof session.outcome.achieved !== "boolean") errors.push("outcome.achieved must be boolean");
+    if (!Object.hasOwn(session.outcome, "achieved") || typeof session.outcome.achieved !== "boolean") errors.push("outcome.achieved must be boolean");
     for (const field of ["quality", "weight"] as const) {
-      if (!inUnitInterval(session.outcome[field])) errors.push(`outcome.${field} must be between 0 and 1`);
+      if (!Object.hasOwn(session.outcome, field) || !inUnitInterval(session.outcome[field])) errors.push(`outcome.${field} must be between 0 and 1`);
     }
-    if (session.outcome.knowledgeDelta !== undefined && !inUnitInterval(session.outcome.knowledgeDelta)) {
+    if (Object.hasOwn(session.outcome, "knowledgeDelta") && !inUnitInterval(session.outcome.knowledgeDelta)) {
       errors.push("outcome.knowledgeDelta must be between 0 and 1");
     }
-    if (session.outcome.value !== undefined &&
+    if (Object.hasOwn(session.outcome, "value") &&
         (!finite(session.outcome.value) || session.outcome.value < 0)) {
       errors.push("outcome.value must be a non-negative finite number");
     }
   }
-  if (typeof session.cost !== "object" || session.cost === null) {
+  if (!Object.hasOwn(session, "cost") || !isPlainRecord(session.cost)) {
     errors.push("cost is required");
   } else {
     rejectUnknownFields(session.cost, ["seconds", "friction", "cognitiveLoad", "errors", "opportunityCost"], "cost.", errors);
-    if (!finite(session.cost.seconds) || session.cost.seconds <= 0) errors.push("cost.seconds must be > 0");
-    if (!Number.isInteger(session.cost.errors) || session.cost.errors < 0) errors.push("cost.errors must be a non-negative integer");
+    if (!Object.hasOwn(session.cost, "seconds") || !finite(session.cost.seconds) || session.cost.seconds <= 0) errors.push("cost.seconds must be > 0");
+    if (!Object.hasOwn(session.cost, "errors") || !Number.isInteger(session.cost.errors) || session.cost.errors < 0) errors.push("cost.errors must be a non-negative integer");
     for (const field of ["friction", "cognitiveLoad"] as const) {
-      if (!inUnitInterval(session.cost[field])) errors.push(`cost.${field} must be between 0 and 1`);
+      if (!Object.hasOwn(session.cost, field) || !inUnitInterval(session.cost[field])) errors.push(`cost.${field} must be between 0 and 1`);
     }
-    if (session.cost.opportunityCost !== undefined &&
+    if (Object.hasOwn(session.cost, "opportunityCost") &&
         (!finite(session.cost.opportunityCost) || session.cost.opportunityCost < 0)) {
       errors.push("cost.opportunityCost must be a non-negative finite number");
     }
   }
-  if (typeof session.guardrails !== "object" || session.guardrails === null) {
+  if (!Object.hasOwn(session, "guardrails") || !isPlainRecord(session.guardrails)) {
     errors.push("guardrails is required");
   } else {
     rejectUnknownFields(session.guardrails, [
@@ -118,13 +145,12 @@ export function validateSession(value: unknown): string[] {
       "meaningfulInteractions", "attentionQuality", "outcomeLift",
     ], "guardrails.", errors);
     for (const field of ["satisfaction", "regret", "harm"] as const) {
-      if (!inUnitInterval(session.guardrails[field])) errors.push(`guardrails.${field} must be between 0 and 1`);
+      if (!Object.hasOwn(session.guardrails, field) || !inUnitInterval(session.guardrails[field])) errors.push(`guardrails.${field} must be between 0 and 1`);
     }
     for (const field of ["fatigue", "drift", "retention", "meaningfulInteractions", "attentionQuality", "outcomeLift"] as const) {
-      const candidate = session.guardrails[field];
-      if (candidate !== undefined && !inUnitInterval(candidate)) errors.push(`guardrails.${field} must be between 0 and 1`);
+      if (Object.hasOwn(session.guardrails, field) && !inUnitInterval(session.guardrails[field])) errors.push(`guardrails.${field} must be between 0 and 1`);
     }
-    if (session.guardrails.flowSeconds !== undefined &&
+    if (Object.hasOwn(session.guardrails, "flowSeconds") &&
         (!finite(session.guardrails.flowSeconds) || session.guardrails.flowSeconds < 0)) {
       errors.push("guardrails.flowSeconds must be non-negative");
     }
@@ -133,16 +159,16 @@ export function validateSession(value: unknown): string[] {
       errors.push("guardrails.flowSeconds cannot exceed cost.seconds");
     }
   }
-  if (session.variant !== undefined &&
+  if (Object.hasOwn(session, "variant") &&
       (typeof session.variant !== "string" || session.variant.trim() === "" || hasUnsafeControl(session.variant))) {
     errors.push("variant must be a non-empty string without control characters when provided");
   }
-  if (session.userHash !== undefined &&
+  if (Object.hasOwn(session, "userHash") &&
       (typeof session.userHash !== "string" || session.userHash.trim() === "" || hasUnsafeControl(session.userHash))) {
     errors.push("userHash must be a non-empty string without control characters when provided");
   }
-  if (session.tags !== undefined &&
-      (!Array.isArray(session.tags) || session.tags.some((tag) =>
+  if (Object.hasOwn(session, "tags") &&
+      (!isDenseArray(session.tags) || session.tags.some((tag) =>
         typeof tag !== "string" || tag.trim() === "" || hasUnsafeControl(tag)))) {
     errors.push("tags must contain only non-empty strings without control characters");
   }
@@ -246,7 +272,10 @@ function makeScore(
 
 export function scoreSession(session: ValueSession, weights: ScoreWeights = DEFAULT_WEIGHTS): SessionScore {
   const errors = validateSession(session);
-  if (errors.length > 0) throw new Error(`invalid session ${session.id || "<unknown>"}: ${errors.join("; ")}`);
+  const label = isPlainRecord(session) && Object.hasOwn(session, "id") && typeof session.id === "string" && session.id.length > 0
+    ? safeForMessage(session.id)
+    : "<unknown>";
+  if (errors.length > 0) throw new Error(`invalid session ${label}: ${errors.join("; ")}`);
   validateWeights(weights);
   const scorers: Record<Archetype, (s: ValueSession, w: ScoreWeights) => SessionScore> = {
     general: scoreGeneral,
@@ -368,25 +397,29 @@ export function analyzeSessions(
   sessions: ValueSession[],
   options: { weights?: ScoreWeights; source?: string; generatedAt?: string; comparisons?: Array<[string, string]> } = {},
 ): AnalysisArtifact {
+  if (!isDenseArray(sessions)) throw new Error("sessions must be a dense array");
   if (sessions.length === 0) throw new Error("at least one session is required");
+  if (!isPlainRecord(options)) throw new Error("analysis options must be a plain object");
+  const unknownOption = Object.keys(options).find((key) => !["weights", "source", "generatedAt", "comparisons"].includes(key));
+  if (unknownOption !== undefined) throw new Error(`unknown analysis option '${safeForMessage(unknownOption)}'`);
   const suppliedWeights = Object.prototype.hasOwnProperty.call(options, "weights");
   const weights = suppliedWeights ? options.weights as ScoreWeights : DEFAULT_WEIGHTS;
   validateWeights(weights);
-  if (options.source !== undefined && typeof options.source !== "string") throw new Error("source must be a string");
-  if (options.generatedAt !== undefined && !isIsoDateTime(options.generatedAt)) {
+  if (Object.hasOwn(options, "source") && typeof options.source !== "string") throw new Error("source must be a string");
+  if (Object.hasOwn(options, "generatedAt") && !isIsoDateTime(options.generatedAt)) {
     throw new Error("generatedAt must be an ISO-8601 date-time");
   }
-  if (options.comparisons !== undefined && (!Array.isArray(options.comparisons) || options.comparisons.some((item) =>
-    !Array.isArray(item) || item.length !== 2 || item.some((name) =>
+  if (Object.hasOwn(options, "comparisons") && (!isDenseArray(options.comparisons) || options.comparisons.some((item) =>
+    !isDenseArray(item) || item.length !== 2 || item.some((name) =>
       typeof name !== "string" || name.trim() === "" || hasUnsafeControl(name))))) {
     throw new Error("comparisons must contain pairs of non-empty labels without control characters");
   }
+  const scores = sessions.map((session) => scoreSession(session, weights));
   const seenIds = new Set<string>();
   for (const session of sessions) {
     if (seenIds.has(session.id)) throw new Error(`duplicate session id '${session.id}'`);
     seenIds.add(session.id);
   }
-  const scores = sessions.map((session) => scoreSession(session, weights));
   const byIntent = groupSummary(sessions, scores, (session) => session.intent);
   const byArchetype = groupSummary(sessions, scores, (session) => session.archetype);
   const byVariant = groupSummary(sessions, scores, (session) => session.variant ?? "unassigned");
@@ -401,7 +434,11 @@ export function analyzeSessions(
   if (sessions.some((session) => session.userHash === undefined)) {
     warnings.push("Some sessions lack userHash; Outcome Rating Points use session ids as a reach proxy.");
   }
-  const source = options.source ?? JSON.stringify(sessions);
+  const source = canonicalSessionSource(sessions);
+  if (Object.hasOwn(options, "source")) {
+    const parsedSource = parseJsonLines(options.source as string);
+    if (canonicalSessionSource(parsedSource) !== source) throw new Error("source ledger does not match the analyzed sessions");
+  }
   return {
     schemaVersion: ANALYSIS_SCHEMA,
     generatedAt: options.generatedAt ?? new Date().toISOString(),
