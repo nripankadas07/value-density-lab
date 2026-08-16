@@ -1,7 +1,7 @@
 {
   "schemaVersion": "value-density.analysis.v1",
   "generatedAt": "2026-01-06T09:30:00.000Z",
-  "sourceSha256": "0fc166a75a054c4f23aa6f083044cdee684067953f72ab7de4805de5cc6944c0",
+  "sourceSha256": "78afe2aeb942667487b9f760e9b1500b81784479b97b8af423dde604a1430f54",
   "formula": "net weighted outcomes / (time + friction + cognitive load + error cost), with archetype-specific models",
   "weights": {
     "satisfaction": 0.25,

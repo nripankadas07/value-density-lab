@@ -8,7 +8,7 @@ Value Density Lab separates collection, scoring, aggregation, and presentation s
 4. Aggregation groups the same scores by variant and archetype. A seeded non-parametric bootstrap gives a descriptive interval around the mean.
 5. Reporters consume the versioned artifact. JSON is canonical evidence; Markdown and HTML are views.
 
-The source ledger is SHA-256 hashed in the result. That detects accidental drift but is not a signature, proof of collection integrity, or identity guarantee.
+The exact analyzed sessions are serialized as sorted-key canonical JSONL and SHA-256 hashed in the result. If a caller supplies original source text, its parsed sessions must canonicalize to the same ledger. This detects accidental drift but is not a signature, proof of collection integrity, or identity guarantee.
 
 ## Trust boundary
 

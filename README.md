@@ -116,7 +116,7 @@ Read [the architecture](docs/architecture.md), [measurement notes](docs/measurem
 
 ## Status
 
-`0.1.0` is a research-quality executable specification. The event and analysis schemas are versioned; scoring weights and collection guidance should be governed by each product team.
+`0.1.1` is a research-quality executable specification. The event and analysis schemas are versioned; scoring weights and collection guidance should be governed by each product team.
 
 MIT licensed. Contributions that add falsifiable examples, adapters, or guardrail checks are welcome.
 

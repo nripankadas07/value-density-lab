@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { analyzeSessions, createDemoSessions, parseJsonLines, validateSession } from "./engine.js";
 import { renderHtml, renderMarkdown } from "./report.js";
+import { writeArtifactSet } from "./safe-output.js";
 import type { AnalysisArtifact, ValueSession } from "./types.js";
 
 const HELP = `Value Density Lab — outcomes achieved per unit of user cost
@@ -20,7 +21,7 @@ function option(args: string[], name: string, fallback?: string): string | undef
   const index = args.indexOf(name);
   if (index < 0) return fallback;
   const value = args[index + 1];
-  if (!value || value.startsWith("--")) throw new Error(`${name} requires a value`);
+  if (!value || value.startsWith("-")) throw new Error(`${name} requires a value`);
   return value;
 }
 
@@ -36,7 +37,7 @@ function validateCommandArgs(args: string[], command: string, allowed: string[],
     if (seen.has(name)) throw new Error(`duplicate option '${name}'`);
     seen.add(name);
     const value = args[index + 1];
-    if (!value || value.startsWith("--")) throw new Error(`${name} requires a value`);
+    if (!value || value.startsWith("-")) throw new Error(`${name} requires a value`);
     index += 1;
   }
 }
@@ -45,14 +46,14 @@ function serializeJsonl(sessions: ValueSession[]): string {
   return `${sessions.map((session) => JSON.stringify(session)).join("\n")}\n`;
 }
 
-async function writeReports(directory: string, artifact: AnalysisArtifact): Promise<void> {
+async function writeReports(directory: string, artifact: AnalysisArtifact, extras: Readonly<Record<string, string>> = {}): Promise<void> {
   const output = resolve(directory);
-  await mkdir(output, { recursive: true });
-  await Promise.all([
-    writeFile(join(output, "analysis.json"), `${JSON.stringify(artifact, null, 2)}\n`, "utf8"),
-    writeFile(join(output, "report.md"), renderMarkdown(artifact), "utf8"),
-    writeFile(join(output, "index.html"), renderHtml(artifact), "utf8"),
-  ]);
+  await writeArtifactSet(output, {
+    ...extras,
+    "analysis.json": `${JSON.stringify(artifact, null, 2)}\n`,
+    "report.md": renderMarkdown(artifact),
+    "index.html": renderHtml(artifact),
+  });
   process.stdout.write(`wrote ${join(output, "analysis.json")}\n`);
   process.stdout.write(`wrote ${join(output, "report.md")}\n`);
   process.stdout.write(`wrote ${join(output, "index.html")}\n`);
@@ -66,6 +67,7 @@ async function load(path: string): Promise<{ text: string; sessions: ValueSessio
 async function run(args: string[]): Promise<void> {
   const [command, input] = args;
   if (!command || command === "help" || command === "--help" || command === "-h") {
+    if (args.length > 1) throw new Error("help does not accept operands");
     process.stdout.write(`${HELP}\n`);
     return;
   }
@@ -74,19 +76,17 @@ async function run(args: string[]): Promise<void> {
     const out = option(args, "--out", ".demo") ?? ".demo";
     const sessions = createDemoSessions();
     const text = serializeJsonl(sessions);
-    await mkdir(resolve(out), { recursive: true });
-    await writeFile(join(resolve(out), "sessions.jsonl"), text, "utf8");
     await writeReports(out, analyzeSessions(sessions, {
       source: text,
       generatedAt: "2026-01-06T09:30:00.000Z",
       comparisons: [["navigation-ui", "intent-first-ui"]],
-    }));
+    }), { "sessions.jsonl": text });
     return;
   }
   if (!["validate", "analyze", "compare"].includes(command)) {
     throw new Error(`unknown command '${command}'\n\n${HELP}`);
   }
-  if (!input || input.startsWith("--")) throw new Error(`${command} requires an input JSONL file`);
+  if (!input || input.startsWith("-")) throw new Error(`${command} requires an input JSONL file`);
   const allowed = command === "validate" ? [] : command === "analyze" ? ["--out"] : ["--out", "--control", "--treatment"];
   validateCommandArgs(args, command, allowed, 1);
   const loaded = await load(input);

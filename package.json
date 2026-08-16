@@ -1,24 +1,21 @@
 {
   "name": "value-density-lab",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Executable product analytics for outcomes achieved per unit of user cost.",
   "type": "module",
   "bin": {
     "value-density": "dist/src/cli.js"
   },
   "exports": "./dist/src/index.js",
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
+  "files": ["dist/src", "docs", "examples", "README.md", "LICENSE"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "package:smoke": "node scripts/package-smoke.mjs",
     "prepack": "npm run build",
     "test": "npm run build && node --test dist/tests/*.test.js",
     "demo": "npm run build && node dist/src/cli.js demo --out .demo",
     "golden": "npm run build && node dist/src/cli.js demo --out artifacts/demo",
-    "check": "npm run test && node dist/src/cli.js validate examples/sessions.jsonl"
+    "check": "npm run test && npm run package:smoke && node dist/src/cli.js validate examples/sessions.jsonl"
   },
   "engines": {
     "node": ">=22"
