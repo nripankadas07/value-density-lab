@@ -1,0 +1,358 @@
+{
+  "schemaVersion": "value-density.analysis.v1",
+  "generatedAt": "2026-01-06T09:30:00.000Z",
+  "sourceSha256": "0fc166a75a054c4f23aa6f083044cdee684067953f72ab7de4805de5cc6944c0",
+  "formula": "net weighted outcomes / (time + friction + cognitive load + error cost), with archetype-specific models",
+  "weights": {
+    "satisfaction": 0.25,
+    "friction": 0.2,
+    "regret": 0.35,
+    "harm": 1,
+    "cognitiveLoad": 0.35,
+    "error": 0.25
+  },
+  "summary": {
+    "sessions": 16,
+    "successRate": 0.875,
+    "guardrailPassRate": 0.875,
+    "mean": 0.501128,
+    "median": 0.487474,
+    "p10": 0.073453,
+    "p90": 0.972644,
+    "ci90": [
+      0.353922,
+      0.665301
+    ],
+    "totalUserHours": 0.652222,
+    "regretRate": 0.125,
+    "outcomeRatingPoints": 0.9933
+  },
+  "byIntent": {
+    "approve supplier invoice": {
+      "sessions": 16,
+      "successRate": 0.875,
+      "guardrailPassRate": 0.875,
+      "mean": 0.501128,
+      "median": 0.487474,
+      "p10": 0.073453,
+      "p90": 0.972644,
+      "ci90": [
+        0.353922,
+        0.665301
+      ],
+      "totalUserHours": 0.652222,
+      "regretRate": 0.125,
+      "outcomeRatingPoints": 0.9933
+    }
+  },
+  "byArchetype": {
+    "utility": {
+      "sessions": 16,
+      "successRate": 0.875,
+      "guardrailPassRate": 0.875,
+      "mean": 0.501128,
+      "median": 0.487474,
+      "p10": 0.073453,
+      "p90": 0.972644,
+      "ci90": [
+        0.353922,
+        0.665301
+      ],
+      "totalUserHours": 0.652222,
+      "regretRate": 0.125,
+      "outcomeRatingPoints": 0.9933
+    }
+  },
+  "byVariant": {
+    "intent-first-ui": {
+      "sessions": 8,
+      "successRate": 1,
+      "guardrailPassRate": 1,
+      "mean": 0.8772,
+      "median": 0.869828,
+      "p10": 0.78667,
+      "p90": 0.972644,
+      "ci90": [
+        0.830706,
+        0.923693
+      ],
+      "totalUserHours": 0.135556,
+      "regretRate": 0,
+      "outcomeRatingPoints": 1.848
+    },
+    "navigation-ui": {
+      "sessions": 8,
+      "successRate": 0.75,
+      "guardrailPassRate": 0.75,
+      "mean": 0.125056,
+      "median": 0.155973,
+      "p10": 0,
+      "p90": 0.188277,
+      "ci90": [
+        0.080253,
+        0.166953
+      ],
+      "totalUserHours": 0.516667,
+      "regretRate": 0.25,
+      "outcomeRatingPoints": 0.3168
+    }
+  },
+  "scores": [
+    {
+      "id": "transfer-1",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "navigation-ui",
+      "achieved": false,
+      "valueDensity": 0,
+      "numerator": 0,
+      "denominator": 3.8635,
+      "guardrailPass": false,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-2",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "navigation-ui",
+      "achieved": true,
+      "valueDensity": 0.188277,
+      "numerator": 0.78,
+      "denominator": 4.142833,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-3",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "navigation-ui",
+      "achieved": true,
+      "valueDensity": 0.165039,
+      "numerator": 0.78,
+      "denominator": 4.726167,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-4",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "navigation-ui",
+      "achieved": true,
+      "valueDensity": 0.146906,
+      "numerator": 0.78,
+      "denominator": 5.3095,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-5",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "navigation-ui",
+      "achieved": false,
+      "valueDensity": 0,
+      "numerator": 0,
+      "denominator": 3.8635,
+      "guardrailPass": false,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-6",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "navigation-ui",
+      "achieved": true,
+      "valueDensity": 0.188277,
+      "numerator": 0.78,
+      "denominator": 4.142833,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-7",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "navigation-ui",
+      "achieved": true,
+      "valueDensity": 0.165039,
+      "numerator": 0.78,
+      "denominator": 4.726167,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-8",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "navigation-ui",
+      "achieved": true,
+      "valueDensity": 0.146906,
+      "numerator": 0.78,
+      "denominator": 5.3095,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-9",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "intent-first-ui",
+      "achieved": true,
+      "valueDensity": 0.78667,
+      "numerator": 0.96,
+      "denominator": 1.220333,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-10",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "intent-first-ui",
+      "achieved": true,
+      "valueDensity": 0.972644,
+      "numerator": 0.96,
+      "denominator": 0.987,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-11",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "intent-first-ui",
+      "achieved": true,
+      "valueDensity": 0.869828,
+      "numerator": 0.96,
+      "denominator": 1.103667,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-12",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "intent-first-ui",
+      "achieved": true,
+      "valueDensity": 0.78667,
+      "numerator": 0.96,
+      "denominator": 1.220333,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-13",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "intent-first-ui",
+      "achieved": true,
+      "valueDensity": 0.972644,
+      "numerator": 0.96,
+      "denominator": 0.987,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-14",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "intent-first-ui",
+      "achieved": true,
+      "valueDensity": 0.869828,
+      "numerator": 0.96,
+      "denominator": 1.103667,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-15",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "intent-first-ui",
+      "achieved": true,
+      "valueDensity": 0.78667,
+      "numerator": 0.96,
+      "denominator": 1.220333,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    },
+    {
+      "id": "transfer-16",
+      "intent": "approve supplier invoice",
+      "archetype": "utility",
+      "variant": "intent-first-ui",
+      "achieved": true,
+      "valueDensity": 0.972644,
+      "numerator": 0.96,
+      "denominator": 0.987,
+      "guardrailPass": true,
+      "components": {
+        "taskValue": 1,
+        "harmMultiplier": 1
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "control": "navigation-ui",
+      "treatment": "intent-first-ui",
+      "controlMean": 0.125056,
+      "treatmentMean": 0.8772,
+      "absoluteLift": 0.752144,
+      "relativeLift": 6.014458,
+      "successRateLift": 0.25,
+      "guardrailPassRateLift": 0.25
+    }
+  ],
+  "warnings": [
+    "Small sample: treat intervals and lifts as directional, not causal evidence.",
+    "Single-intent sample: do not generalize the score across product jobs."
+  ]
+}

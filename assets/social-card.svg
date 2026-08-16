@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Value Density Lab</title>
+  <desc id="desc">Outcome analytics that divides meaningful results by user cost.</desc>
+  <defs>
+    <radialGradient id="bg" cx="82%" cy="8%" r="90%">
+      <stop offset="0" stop-color="#254a78"/>
+      <stop offset="0.48" stop-color="#0c1d31"/>
+      <stop offset="1" stop-color="#07111f"/>
+    </radialGradient>
+    <linearGradient id="line" x1="0" x2="1">
+      <stop stop-color="#58d6b9"/>
+      <stop offset="1" stop-color="#ffcb6b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="28" fill="url(#bg)"/>
+  <g opacity=".25" stroke="#8ba6c5">
+    <path d="M0 105h1200M0 210h1200M0 315h1200M0 420h1200M0 525h1200"/>
+    <path d="M200 0v630M400 0v630M600 0v630M800 0v630M1000 0v630"/>
+  </g>
+  <rect x="74" y="70" width="222" height="42" rx="21" fill="#58d6b9"/>
+  <text x="185" y="98" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-weight="800" font-size="18" fill="#07111f" letter-spacing="2">LOCAL-FIRST</text>
+  <text x="72" y="230" font-family="ui-sans-serif,system-ui" font-weight="800" font-size="82" fill="#f1f6fb" letter-spacing="-4">Value Density</text>
+  <text x="76" y="287" font-family="ui-sans-serif,system-ui" font-size="30" fill="#b7c7d9">Outcomes achieved per unit of user cost.</text>
+  <g transform="translate(76 365)">
+    <text x="0" y="0" font-family="ui-monospace,SFMono-Regular,monospace" font-size="22" fill="#9fb0c4">OUTCOMES</text>
+    <rect x="0" y="22" width="392" height="13" rx="7" fill="url(#line)"/>
+    <path d="M0 72h392" stroke="#91a9c3" stroke-width="3"/>
+    <text x="0" y="116" font-family="ui-monospace,SFMono-Regular,monospace" font-size="22" fill="#9fb0c4">TIME + FRICTION + LOAD + REGRET</text>
+  </g>
+  <g transform="translate(820 332)">
+    <circle cx="120" cy="80" r="126" fill="#0b1828" stroke="#2b496a" stroke-width="3"/>
+    <path d="M42 109C70 79 82 93 105 60s49 1 75-45" fill="none" stroke="url(#line)" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="42" cy="109" r="10" fill="#58d6b9"/><circle cx="105" cy="60" r="10" fill="#75d2ac"/><circle cx="180" cy="15" r="10" fill="#ffcb6b"/>
+    <text x="120" y="181" text-anchor="middle" font-family="ui-sans-serif,system-ui" font-weight="700" font-size="20" fill="#e8f0f8">MEASURE VALUE</text>
+  </g>
+  <text x="76" y="574" font-family="ui-sans-serif,system-ui" font-size="20" fill="#7890aa">Auditable JSON · Markdown · standalone HTML · no telemetry</text>
+</svg>

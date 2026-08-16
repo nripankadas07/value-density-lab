@@ -1,0 +1,21 @@
+name: Bug report
+description: Report reproducible incorrect behavior
+title: "[bug] "
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: Reproduction
+      description: Include a minimized, non-sensitive JSONL fixture and exact command.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Node and package version
+    validations:
+      required: true

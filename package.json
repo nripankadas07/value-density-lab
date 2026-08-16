@@ -1,0 +1,47 @@
+{
+  "name": "value-density-lab",
+  "version": "0.1.0",
+  "description": "Executable product analytics for outcomes achieved per unit of user cost.",
+  "type": "module",
+  "bin": {
+    "value-density": "dist/src/cli.js"
+  },
+  "exports": "./dist/src/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "demo": "npm run build && node dist/src/cli.js demo --out .demo",
+    "golden": "npm run build && node dist/src/cli.js demo --out artifacts/demo",
+    "check": "npm run test && node dist/src/cli.js validate examples/sessions.jsonl"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "product-analytics",
+    "value-density",
+    "outcome-metrics",
+    "product-management",
+    "privacy-first"
+  ],
+  "author": "Dr. Nripanka Das",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nripankadas07/value-density-lab.git"
+  },
+  "homepage": "https://github.com/nripankadas07/value-density-lab#readme",
+  "bugs": {
+    "url": "https://github.com/nripankadas07/value-density-lab/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}

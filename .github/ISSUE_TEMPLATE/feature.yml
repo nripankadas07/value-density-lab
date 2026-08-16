@@ -1,0 +1,16 @@
+name: Feature proposal
+description: Propose a falsifiable adapter, metric, or guardrail
+title: "[proposal] "
+labels: [enhancement]
+body:
+  - type: textarea
+    attributes:
+      label: Decision problem
+      description: What decision cannot be made with the current artifact?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Evidence and anti-gaming plan
+    validations:
+      required: true

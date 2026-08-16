@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If Value Density Lab supports your work, cite this software and the source framework."
+title: "Value Density Lab"
+type: software
+version: 0.1.0
+date-released: 2026-08-16
+authors:
+  - family-names: Das
+    given-names: Nripanka
+repository-code: "https://github.com/nripankadas07/value-density-lab"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Beyond the Attention Economy: The Value Density Framework for Digital Platform Success"
+  authors:
+    - family-names: Das
+      given-names: Nripanka
+  year: 2026
+  url: "https://www.linkedin.com/pulse/beyond-attention-economy-value-density-framework-digital-das-5wiqc"
