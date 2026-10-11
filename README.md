@@ -1,5 +1,7 @@
 # Value Density Lab
 
+**Try it and help shape the next release:** [short user pilot](docs/USER_PILOT.md) · [give feedback](https://github.com/nripankadas07/value-density-lab/issues/new?template=user_feedback.yml).
+
 ![Value Density Lab — outcomes over user cost](assets/social-card.svg)
 
 Executable product analytics for a simple corrective idea: **success is outcomes achieved per unit of user cost**.
